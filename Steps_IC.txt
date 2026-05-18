@@ -1,0 +1,27 @@
+mkdir traffic-gemelo
+ubuntu-drivers devices | grep recommended
+sudo ubuntu-drivers autoinstall
+sudo reboot
+nvidia-smi
+-----------------------------------------------------------------
+cd traffic-gemelo/
+python3 -m venv venv
+source venv/bin/activate
+# Actualizar pip
+pip install --upgrade pip
+# Instala PyTorch con CUDA 12.1 (La versión estable)
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+pip install ultralytics opencv-python flask requests
+python -c "import torch; print('CUDA disponible:', torch.cuda.is_available())" #respuesta debe ser "True"
+pip freeze > requirements.txt
+#Estructura de directorios
+mkdir -p ~/traffic-gemelo/src
+mkdir -p ~/traffic-gemelo/models
+mkdir -p ~/traffic-gemelo/videos
+#Busqueda intensiba del enlace m3u8
+ffplay "https://wzmedia.dot.ca.gov/D12/EB22BROOKHURST.stream/playlist.m3u8"
+ffmpeg -i "https://wzmedia.dot.ca.gov/D12/EB22BROOKHURST.stream/playlist.m3u8" -t 120 -c copy ~/traffic-gemelo/videos/respaldo.mp4
+#Redacción de los códigos para el local:
+gedit detector.py
+gedit server.py
+
