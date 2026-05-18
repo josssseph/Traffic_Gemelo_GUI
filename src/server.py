@@ -585,14 +585,14 @@ def index():
                 height: 400px;
                 background: #000;
                 border-radius: 6px;
-                overflow: auto;
                 display: flex;
                 align-items: center;
                 justify-content: center;
+                position: relative;
             }
             #map-container svg {
-                max-width: 100%;
-                height: auto;
+                width: 100%;
+                height: 100%;
                 cursor: crosshair;
             }
             .points-list {
@@ -854,7 +854,7 @@ def index():
                     const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
                     circle.setAttribute('cx', p[0]);
                     circle.setAttribute('cy', p[1]);
-                    circle.setAttribute('r', '8');
+                    circle.setAttribute('r', '0.1');  // ← RADIO DEL CÍRCULO NARANJA (en unidades SVG)
                     circle.setAttribute('fill', '#ff6600');
                     circle.setAttribute('stroke', '#ffaa00');
                     circle.setAttribute('stroke-width', '2');
@@ -881,14 +881,18 @@ def index():
             mapContainer.addEventListener('click', (e) => {
                 if (!mapSvg || pixelPoints.length <= worldPoints.length) return;
                 
-                const svgRect = mapSvg.getBoundingClientRect();
-                const x = e.clientX - svgRect.left;
-                const y = e.clientY - svgRect.top;
+                // Transformar coordenadas del click al espacio SVG
+                const pt = mapSvg.createSVGPoint();
+                pt.x = e.clientX;
+                pt.y = e.clientY;
                 
-                const scaledX = x * (mapSvg.viewBox.baseVal.width / svgRect.width) + mapSvg.viewBox.baseVal.x;
-                const scaledY = y * (mapSvg.viewBox.baseVal.height / svgRect.height) + mapSvg.viewBox.baseVal.y;
+                const screenCTM = mapSvg.getScreenCTM();
+                if (!screenCTM) return;
                 
-                worldPoints.push([Math.round(scaledX), Math.round(scaledY)]);
+                const svgPt = pt.matrixTransform(screenCTM.inverse());
+                
+                // Guardar coordenadas directas del SVG (ya están invertidas en el backend)
+                worldPoints.push([Math.round(svgPt.x), Math.round(svgPt.y)]);
                 redrawMapPoints();
                 clickMode = 'pixel';
                 step2Status.textContent = '';

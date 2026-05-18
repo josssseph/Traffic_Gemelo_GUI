@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- generated on 2026-05-17 07:26:43 by Eclipse SUMO netedit Version 1.12.0
+<!-- generated on 2026-05-18 00:02:27 by Eclipse SUMO netedit Version 1.12.0
 <configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/netconvertConfiguration.xsd">
 
     <input>
@@ -8,7 +8,7 @@
     </input>
 
     <output>
-        <output-file value="/root/omnet/int1/mapmod.net.xml"/>
+        <output-file value="map1int.net.xml"/>
     </output>
 
     <processing>
@@ -127,13 +127,13 @@
     </edge>
 
     <edge id="-552272187#0" from="766908551" to="J0" priority="11" type="highway.secondary">
-        <lane id="-552272187#0_0" index="0" disallow="tram rail_urban rail rail_electric rail_fast ship" speed="13.89" length="67.10" shape="199.07,418.26 266.02,422.79"/>
+        <lane id="-552272187#0_0" index="0" disallow="tram rail_urban rail rail_electric rail_fast ship" speed="13.89" length="67.10" shape="199.07,418.26 266.02,422.78"/>
     </edge>
     <edge id="-552272187#1" from="766908473" to="766908551" priority="11" type="highway.secondary" shape="102.54,412.85 117.72,413.97 189.64,419.23">
         <lane id="-552272187#1_0" index="0" disallow="tram rail_urban rail rail_electric rail_fast ship" speed="13.89" length="78.32" shape="102.66,411.25 117.84,412.37 180.77,416.98"/>
     </edge>
     <edge id="-86134858#0" from="766908551" to="J2" priority="3" type="highway.residential" shape="189.64,419.23 178.56,389.88 169.92,370.23 162.97,360.63 161.74,358.98">
-        <lane id="-86134858#0_0" index="0" disallow="tram rail_urban rail rail_electric rail_fast ship" speed="8.33" length="57.28" shape="184.96,411.37 177.08,390.48 168.52,371.03 161.68,361.57 160.46,359.94"/>
+        <lane id="-86134858#0_0" index="0" disallow="tram rail_urban rail rail_electric rail_fast ship" speed="8.33" length="57.29" shape="184.96,411.37 177.08,390.48 168.52,371.03 161.68,361.57 160.46,359.94"/>
     </edge>
     <edge id="-86134858#10" from="J1" to="766908551" priority="3" type="highway.residential" shape="227.90,502.13 207.82,459.56 189.64,419.23">
         <lane id="-86134858#10_0" index="0" disallow="tram rail_urban rail rail_electric rail_fast ship" speed="8.33" length="81.99" shape="226.45,502.81 206.37,460.23 192.02,428.40"/>
@@ -148,7 +148,7 @@
         <lane id="86134858#0.396_0" index="0" disallow="tram rail_urban rail rail_electric rail_fast ship" speed="8.33" length="58.19" shape="163.02,358.02 164.26,359.68 171.32,369.43 180.04,389.28 187.95,410.24"/>
     </edge>
     <edge id="86134858#1" from="766908551" to="J1" priority="3" type="highway.residential" shape="189.64,419.23 207.82,459.56 227.90,502.13">
-        <lane id="86134858#1_0" index="0" disallow="tram rail_urban rail rail_electric rail_fast ship" speed="8.33" length="81.93" shape="194.94,427.09 209.27,458.89 229.34,501.44"/>
+        <lane id="86134858#1_0" index="0" disallow="tram rail_urban rail rail_electric rail_fast ship" speed="8.33" length="81.94" shape="194.94,427.09 209.27,458.89 229.35,501.45"/>
     </edge>
 
     <tlLogic id="766908551" type="static" programID="0" offset="0">
@@ -175,9 +175,9 @@
         <request index="10" response="000100000100" foes="000111100110" cont="0"/>
         <request index="11" response="000100011100" foes="000110011110" cont="1"/>
     </junction>
-    <junction id="J0" type="dead_end" x="265.91" y="424.38" incLanes="-552272187#0_0" intLanes="" shape="265.91,424.38 266.12,421.19 265.91,424.38"/>
+    <junction id="J0" type="dead_end" x="265.91" y="424.38" incLanes="-552272187#0_0" intLanes="" shape="265.91,424.38 266.13,421.19 265.91,424.38"/>
     <junction id="J1" type="dead_end" x="227.90" y="502.13" incLanes="86134858#1_0" intLanes="" shape="227.90,502.13 230.79,500.76 227.90,502.13"/>
-    <junction id="J2" type="dead_end" x="161.74" y="358.98" incLanes="-86134858#0_0" intLanes="" shape="161.74,358.98 159.18,360.90 161.74,358.98"/>
+    <junction id="J2" type="dead_end" x="161.74" y="358.98" incLanes="-86134858#0_0" intLanes="" shape="161.74,358.98 159.17,360.89 161.74,358.98"/>
 
     <junction id=":766908551_12_0" type="internal" x="190.64" y="423.52" incLanes=":766908551_2_0 86134858#0.396_0" intLanes=":766908551_4_0 :766908551_5_0 :766908551_6_0 :766908551_7_0 :766908551_10_0 :766908551_11_0"/>
     <junction id=":766908551_13_0" type="internal" x="193.98" y="419.95" incLanes=":766908551_5_0 -552272187#1_0" intLanes=":766908551_1_0 :766908551_2_0 :766908551_7_0 :766908551_8_0 :766908551_9_0 :766908551_10_0"/>

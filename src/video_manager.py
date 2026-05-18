@@ -153,6 +153,7 @@ class VideoSourceManager:
     def get_map_as_svg(self, map_name: str) -> Optional[str]:
         """
         Convierte archivo .net (SUMO XML) a SVG para visualización
+        Con soporte para zoom y posicionamiento dinámico
         
         Args:
             map_name: nombre del mapa
@@ -177,7 +178,7 @@ class VideoSourceManager:
             if not junctions:
                 return None
             
-            # Calcular bounding box
+            # Calcular bounding box de coordenadas reales
             x_coords = []
             y_coords = []
             
@@ -192,25 +193,44 @@ class VideoSourceManager:
             min_y = min(y_coords)
             max_y = max(y_coords)
             
-            # Padding
-            padding = 50
-            width = int(max_x - min_x) + 2 * padding
-            height = int(max_y - min_y) + 2 * padding
+            # Padding como % de las dimensiones
+            padding_pct = 0.1
+            x_range = max_x - min_x
+            y_range = max_y - min_y
             
-            if width < 100 or height < 100:
-                width = 800
-                height = 600
+            x_padding = x_range * padding_pct if x_range > 0 else 50
+            y_padding = y_range * padding_pct if y_range > 0 else 50
             
-            # Crear SVG con viewBox para responsividad
+            viewbox_min_x = min_x - x_padding
+            viewbox_min_y = min_y - y_padding
+            viewbox_width = x_range + 2 * x_padding
+            viewbox_height = y_range + 2 * y_padding
+            
+            # Garantizar tamaño mínimo
+            if viewbox_width < 100:
+                viewbox_width = 100
+                viewbox_min_x = (min_x + max_x) / 2 - 50
+            if viewbox_height < 100:
+                viewbox_height = 100
+                viewbox_min_y = (min_y + max_y) / 2 - 50
+            
+            # Crear SVG con viewBox dinámico
             svg_lines = [
-                f'<svg viewBox="0 0 {width} {height}" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" style="max-width: 100%; height: auto; width: 100%;">',
-                '<style>',
-                '  .edge { stroke: #333; stroke-width: 2; fill: none; }',
-                '  .junction { fill: #0066cc; }',
-                '  .junction-label { font-size: 8px; fill: white; text-anchor: middle; }',
-                '</style>',
-                f'<rect width="{width}" height="{height}" fill="#f0f0f0"/>'
+                f'<svg id="route-map" viewBox="{viewbox_min_x} {viewbox_min_y} {viewbox_width} {viewbox_height}" '
+                f'preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" '
+                f'style="width: 100%; height: 100%; background: #f0f0f0; display: block;">',
+                '<defs>',
+                '  <style>',
+                '    .edge { stroke: #333; stroke-width: 3; fill: none; stroke-linecap: round; }',
+                '    .junction { fill: #0066cc; }',
+                '    .junction-label { font-size: 10px; fill: white; text-anchor: middle; pointer-events: none; }',
+                '  </style>',
+                '</defs>',
+                f'<rect x="{viewbox_min_x}" y="{viewbox_min_y}" width="{viewbox_width}" height="{viewbox_height}" fill="#f0f0f0"/>'
             ]
+            
+            # IMPORTANTE: Invertir eje Y (SUMO tiene Y hacia arriba, SVG hacia abajo)
+            y_center = (min_y + max_y) / 2
             
             # Dibujar edges (calles)
             for edge in edges:
@@ -220,12 +240,15 @@ class VideoSourceManager:
                     if shape:
                         points = []
                         for coord in shape.split():
-                            x, y = map(float, coord.split(','))
-                            px = int((x - min_x) + padding)
-                            py = int((y - min_y) + padding)
-                            points.append(f"{px},{py}")
+                            try:
+                                x, y = map(float, coord.split(','))
+                                # Invertir Y: y_invertido = center - (y - center) = 2*center - y
+                                y_inv = 2 * y_center - y
+                                points.append(f"{x},{y_inv}")
+                            except:
+                                continue
                         
-                        if points:
+                        if len(points) > 1:
                             points_str = ' '.join(points)
                             svg_lines.append(f'<polyline class="edge" points="{points_str}"/>')
             
@@ -235,18 +258,20 @@ class VideoSourceManager:
                 y = float(junction.get('y', 0))
                 jid = junction.get('id', '')
                 
-                px = int((x - min_x) + padding)
-                py = int((y - min_y) + padding)
+                # Invertir Y
+                y_inv = 2 * y_center - y
                 
-                svg_lines.append(f'<circle cx="{px}" cy="{py}" r="4" class="junction"/>')
-                if len(jid) < 10:  # Solo labels cortos
-                    svg_lines.append(f'<text x="{px}" y="{py+8}" class="junction-label">{jid}</text>')
+                svg_lines.append(f'<circle cx="{x}" cy="{y_inv}" r="5" class="junction"/>')
+                if len(jid) < 15:
+                    svg_lines.append(f'<text x="{x}" y="{y_inv+12}" class="junction-label">{jid}</text>')
             
             svg_lines.append('</svg>')
             return '\n'.join(svg_lines)
             
         except Exception as e:
             print(f"[NETWORK] Error converting to SVG: {e}")
+            import traceback
+            traceback.print_exc()
             return None
     
     def get_available_sources(self) -> Dict[str, dict]:

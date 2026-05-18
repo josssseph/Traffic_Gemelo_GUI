@@ -85,6 +85,9 @@ def get_detection_data():
         
         data['source'] = current_source
         
+        # Agregar mapa actual (para que PC2 sepa cuál .net abrir)
+        data['current_map'] = calibration_manager.current_map
+        
         return data
 
 def update_detection_data(new_data):
